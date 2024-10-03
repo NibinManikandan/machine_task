@@ -68,9 +68,9 @@ class CompanyDetailAPIView(generics.RetrieveUpdateAPIView):
 class JobListingListCreateAPIView(generics.ListCreateAPIView):
     queryset = JobListing.objects.all()
     serializer_class = JobListingSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]  # Updated permission class
+    permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_class = JobListingFilter  # Custom filter class
+    filterset_class = JobListingFilter 
     search_fields = ['title', 'company__name', 'location']
     ordering_fields = ['salary', 'created_at']
 
@@ -147,9 +147,9 @@ class IsCandidateOrAdmin(permissions.BasePermission):
 class JobApplicationListCreateAPIView(generics.ListCreateAPIView):
     queryset = JobApplication.objects.all()
     serializer_class = JobApplicationSerializer
-    permission_classes = [IsAuthenticated]  # Permission class for authenticated users
+    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_class = JobApplicationFilter  # Custom filter class for job applications
+    filterset_class = JobApplicationFilter
     search_fields = ['job__title', 'candidate__username']
     ordering_fields = ['applied_at', 'status']
 
