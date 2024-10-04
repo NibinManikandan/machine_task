@@ -65,6 +65,16 @@ class JobApplicationSerializer(serializers.ModelSerializer):
 
 
 
+class ApplicationSerializer(serializers.ModelSerializer):
+    job_title = serializers.ReadOnlyField(source='job.title')
+    candidate_name = serializers.ReadOnlyField(source='candidate.username')
+
+    class Meta:
+        model = JobApplication
+        fields = ['id', 'job', 'job_title', 'candidate', 'candidate_name', 'resume', 'cover_letter', 'applied_at', 'status']
+
+
+
 #addin company
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:

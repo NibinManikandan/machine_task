@@ -175,12 +175,13 @@ class JobApplicationListCreateAPIView(generics.ListCreateAPIView):
 class JobApplicationDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobApplication.objects.all()
     serializer_class = JobApplicationSerializer
-    permission_classes = [IsAuthenticated, IsCandidateOrAdmin]
+    permission_classes = [IsAuthenticated]
 
     def perform_update(self, serializer):
         user = self.request.user
         job_application = self.get_object()
         
+        print(user.role, "this is the user role")
         if user.role == 'employer' and job_application.job.company.owner == user:
             serializer.save()
         elif user.role == 'admin':
@@ -193,6 +194,29 @@ class JobApplicationDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         if instance.candidate != user and user.role != 'admin':
             raise PermissionDenied("You do not have permission to delete this job application.")
         instance.delete()
+
+
+
+
+class UpdateJobApplicationStatusAPIView(generics.UpdateAPIView):
+    queryset = JobApplication.objects.all()
+    serializer_class = ApplicationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def partial_update(self, request, *args, **kwargs):
+        user = request.user
+        job_application = self.get_object()
+
+        # Ensure only the employer can update the status
+        if user.role != 'employer' or job_application.job.company.owner != user:
+            raise PermissionDenied("You do not have permission to update this job application status.")
+
+        # Check that only the status field is being updated
+        if 'status' not in request.data:
+            raise ValidationError("Only the status field can be updated.")
+
+        # Update the status
+        return super().partial_update(request, *args, **kwargs)
 
 
 

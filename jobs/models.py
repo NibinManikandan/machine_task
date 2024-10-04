@@ -42,7 +42,7 @@ class Company(models.Model):
     location = models.CharField(max_length=100)
     description = models.TextField()
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, 
+        CustomUser, 
         on_delete=models.CASCADE,
         limit_choices_to={'role': 'employer'}
     )
@@ -56,7 +56,9 @@ class Company(models.Model):
         super(Company, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
+        # return self.name
+        print(f'{self.name} ({self.pk})')
+        return f'{self.name} ({self.pk})'
 
     
 
@@ -90,7 +92,7 @@ class JobApplication(models.Model):
 
     job = models.ForeignKey('JobListing', on_delete=models.CASCADE)
     candidate = models.ForeignKey(
-        settings.AUTH_USER_MODEL, 
+        CustomUser, 
         on_delete=models.CASCADE,
         limit_choices_to={'role': 'candidate'}
     )
