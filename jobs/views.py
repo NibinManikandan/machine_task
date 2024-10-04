@@ -193,3 +193,14 @@ class JobApplicationDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         if instance.candidate != user and user.role != 'admin':
             raise PermissionDenied("You do not have permission to delete this job application.")
         instance.delete()
+
+
+
+#adding company
+class CompanyCreateView(generics.CreateAPIView):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save()

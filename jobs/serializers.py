@@ -61,3 +61,18 @@ class JobApplicationSerializer(serializers.ModelSerializer):
         model = JobApplication
         fields = ['id', 'job', 'job_title', 'candidate', 'candidate_name', 'resume', 'cover_letter', 'applied_at', 'status']
         read_only_fields = ['job_title', 'candidate_name', 'applied_at', 'status']
+
+
+
+
+#addin company
+class CompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = ['name', 'location', 'description', 'owner', 'website', 'company_size', 'industry']
+
+    # Optional validation to ensure that the owner is an employer
+    def validate_owner(self, value):
+        if value.role != 'employer':
+            raise serializers.ValidationError("Owner must have the role of 'employer'.")
+        return value

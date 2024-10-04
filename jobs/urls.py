@@ -12,6 +12,8 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('role/', RoleView.as_view(), name='role'),
 
+    path('company/add/', CompanyCreateView.as_view(), name='company-create'),
+
     #job listing
     path('jobs/', JobListingListCreateAPIView.as_view(), name='job-list-create'),
     path('jobs/<int:pk>/', JobListingDetailAPIView.as_view(), name='job-detail'),
