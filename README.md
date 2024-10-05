@@ -1,4 +1,4 @@
-# Project Name
+# Machine Task
 
 The objective of this machine test is to develop a RESTful API that
 manages job listings, applications, and user roles ( Candidates,
