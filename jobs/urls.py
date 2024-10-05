@@ -12,6 +12,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('role/', RoleView.as_view(), name='role'),
 
+    #adding compony
     path('company/add/', CompanyCreateView.as_view(), name='company-create'),
 
     #job listing

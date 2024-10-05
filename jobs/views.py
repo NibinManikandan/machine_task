@@ -46,7 +46,7 @@ class RoleView(generics.RetrieveAPIView):
     
 
 
-#permission for employers and admins
+#function for give permission for Employers and Admins
 class IsEmployerOrAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and (request.user.role == 'employer' or request.user.role == 'admin')
@@ -54,8 +54,9 @@ class IsEmployerOrAdmin(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.user.role == 'admin':
             return True
-        return obj.company.owner == request.user
+        return obj.job.company.owner == request.user
     
+
 
 #function for manaaging company
 class CompanyDetailAPIView(generics.RetrieveUpdateAPIView):
@@ -64,7 +65,7 @@ class CompanyDetailAPIView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated, IsEmployerOrAdmin]
 
 
-#list and create jobs
+#function for list and create jobs
 class JobListingListCreateAPIView(generics.ListCreateAPIView):
     queryset = JobListing.objects.all()
     serializer_class = JobListingSerializer
@@ -97,7 +98,7 @@ class JobListingListCreateAPIView(generics.ListCreateAPIView):
 
 
 
-#retrieve, update, and delete jobs
+#function for retrieve, update, and delete jobs
 class JobListingDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobListing.objects.all()
     serializer_class = JobListingSerializer
@@ -119,19 +120,7 @@ class JobListingDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
-#permission for Employers and Admins
-class IsEmployerOrAdmin(permissions.BasePermission):
-    def has_permission(self, request, view):
-        return request.user.is_authenticated and (request.user.role == 'employer' or request.user.role == 'admin')
-
-    def has_object_permission(self, request, view, obj):
-        if request.user.role == 'admin':
-            return True
-        return obj.job.company.owner == request.user
-
-
-
-#permission for Candidates
+#function for give permission for Candidates
 class IsCandidateOrAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and (request.user.role == 'candidate' or request.user.role == 'admin')
@@ -143,7 +132,7 @@ class IsCandidateOrAdmin(permissions.BasePermission):
 
 
 
-#list and create job applications
+#function for list and create job applications
 class JobApplicationListCreateAPIView(generics.ListCreateAPIView):
     queryset = JobApplication.objects.all()
     serializer_class = JobApplicationSerializer
@@ -171,7 +160,7 @@ class JobApplicationListCreateAPIView(generics.ListCreateAPIView):
 
 
 
-#retrieve, update, and delete job applications
+#function for retrieve, update, and delete job applications
 class JobApplicationDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobApplication.objects.all()
     serializer_class = JobApplicationSerializer
@@ -197,7 +186,7 @@ class JobApplicationDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
-
+# function for job application status change
 class UpdateJobApplicationStatusAPIView(generics.UpdateAPIView):
     queryset = JobApplication.objects.all()
     serializer_class = ApplicationSerializer
@@ -207,20 +196,17 @@ class UpdateJobApplicationStatusAPIView(generics.UpdateAPIView):
         user = request.user
         job_application = self.get_object()
 
-        # Ensure only the employer can update the status
         if user.role != 'employer' or job_application.job.company.owner != user:
             raise PermissionDenied("You do not have permission to update this job application status.")
 
-        # Check that only the status field is being updated
         if 'status' not in request.data:
             raise ValidationError("Only the status field can be updated.")
 
-        # Update the status
         return super().partial_update(request, *args, **kwargs)
 
 
 
-#adding company
+#function for adding company
 class CompanyCreateView(generics.CreateAPIView):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
